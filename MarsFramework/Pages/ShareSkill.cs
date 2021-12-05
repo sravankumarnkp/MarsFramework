@@ -4,6 +4,8 @@ using System.Linq;
 using MarsFramework.Global;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.PageObjects;
+using AutoItX3Lib;
+using System.Threading;
 
 namespace MarsFramework.Pages
 {
@@ -30,7 +32,7 @@ namespace MarsFramework.Pages
         [FindsBy(How = How.Name, Using = "categoryId")]
         private IWebElement CategoryDropDown { get; set; }
 
-       
+
         [FindsBy(How = How.TagName, Using = "option")]
 
         private IList<IWebElement> CategoryDropDownlist { get; set; }
@@ -53,7 +55,7 @@ namespace MarsFramework.Pages
         [FindsBy(How = How.XPath, Using = "//form/div[5]/div[@class='twelve wide column']/div/div[@class='field']")]
         private IWebElement ServiceTypeOptions { get; set; }
 
-        [FindsByAll][FindsBy(How = How.Name, Using = "serviceType")]
+        [FindsByAll] [FindsBy(How = How.Name, Using = "serviceType")]
         private IList<IWebElement> ServiceType { get; set; }
 
         //Select the Location Type
@@ -64,7 +66,7 @@ namespace MarsFramework.Pages
         [FindsBy(How = How.Name, Using = "locationType")]
         private IList<IWebElement> LocationType { get; set; }
 
-        
+
 
         //Click on Start Date dropdown
         [FindsBy(How = How.Name, Using = "startDate")]
@@ -79,11 +81,11 @@ namespace MarsFramework.Pages
 
         //////Storing the table of available days
 
-        [FindsBy(How=How.XPath, Using = "//div[@class='ui checkbox']//input[@name='Available']")]
+        [FindsBy(How = How.XPath, Using = "//div[@class='ui checkbox']//input[@name='Available']")]
         private IList<IWebElement> Days { get; set; }
 
 
-        
+
         //Storing the starttime
         [FindsBy(How = How.XPath, Using = "//div[@class='four wide field']//input[@name='StartTime']")]
         private IList<IWebElement> StartTimeDropdown { get; set; }
@@ -106,7 +108,7 @@ namespace MarsFramework.Pages
 
         //Enter the amount for Credit
         [FindsBy(How = How.XPath, Using = "//*[@id='service-listing-section']/div[2]/div/form/div[8]/div[4]/div/div/input")]
-      
+
         private IWebElement CreditAmount { get; set; }
         //form/div[10]/div[@class='twelve wide column']/div/div[@class = 'field']
         //Click on Active/Hidden option
@@ -117,12 +119,16 @@ namespace MarsFramework.Pages
         [FindsBy(How = How.XPath, Using = "//input[@value='Save']")]
         private IWebElement Save { get; set; }
 
+        //image icon webelment
+        [FindsBy(How = How.XPath, Using = "//*[@id='service-listing-section']/div[2]/div/form/div[9]/div/div[2]/section/div/label/div/span/i")]
+        private IWebElement imageIcon { get; set; }
+
         internal void EnterShareSkill()
         {
             //Populate the excel data
             GlobalDefinitions.ExcelLib.PopulateInCollection(Base.ExcelPath, "ShareSkill");
             shareSkillTitle();
-
+            //AutoItX3 autoIt = new AutoItX3();
             //sending the descriptiion
             string desText = GlobalDefinitions.ExcelLib.ReadData(2, "Description");
             shareListenDescTextField(desText);
@@ -209,9 +215,28 @@ namespace MarsFramework.Pages
             String exclcredit = GlobalDefinitions.ExcelLib.ReadData(2, "Credit");
             skillTrade(skillTradebutton, skillExe, exclcredit);
 
+            //upload image 
+            imageIcon.Click();
+            AutoItX3 autoIt = new AutoItX3();
+            Thread.Sleep(2000);
+            autoIt.WinActivate("Open"); // Window name to select a file 
+            autoIt.Send(@"C:\Users\Dell\Documents\test.txt"); // file path 
+            Thread.Sleep(1500);
+            autoIt.Send("{Enter}");
+           // var procStartInfo = new System.Diagnostics.ProcessStartInfo(@"C:\Users\Dell\Documents\marsframework\MarsFramework\TestReports\fileupload.exe");
+
+            //var proc = new System.Diagnostics.Process { StartInfo = procStartInfo };
+
+            //proc.Start();
+
+            //proc.WaitForExit(5000);
+
+            //proc.Kill();
+
             //active or hidden 
             String exlActive = GlobalDefinitions.ExcelLib.ReadData(2, "Active");
             activeButton(exlActive);
+                   
 
             GlobalDefinitions.wait(25);
 
